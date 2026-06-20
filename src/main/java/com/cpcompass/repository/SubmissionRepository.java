@@ -1,0 +1,16 @@
+package com.cpcompass.repository;
+
+import com.cpcompass.entity.Submission;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface SubmissionRepository
+        extends JpaRepository<Submission, Long> {
+
+    List<Submission> findByUserIdOrderBySubmissionTimeDesc(
+            Long userId
+    );
+
+    void deleteByUserId(Long userId);
+}
