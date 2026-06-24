@@ -1,6 +1,7 @@
 package com.cpcompass.client;
 
 import com.cpcompass.dto.sync.CfContestResponse;
+import com.cpcompass.dto.sync.CfProblemsetResponse;
 import com.cpcompass.dto.sync.CfSubmissionResponse;
 import com.cpcompass.dto.sync.CfUserInfoResponse;
 import org.springframework.stereotype.Component;
@@ -65,6 +66,16 @@ public class CodeforcesClient {
         return restTemplate.getForObject(
                 url,
                 CfSubmissionResponse.class
+        );
+    }
+    public CfProblemsetResponse getProblemset() {
+
+        String url =
+                "https://codeforces.com/api/problemset.problems";
+
+        return restTemplate.getForObject(
+                url,
+                CfProblemsetResponse.class
         );
     }
 }
