@@ -27,6 +27,18 @@ public class User {
     @Column(nullable=false,unique=true)
     private String codeforcesHandle;
 
+    private Integer currentRating;
+
+    private Integer maxRating;
+
+    private String rank;
+
+    private String maxRank;
+
+    private Integer contribution;
+
+    private LocalDateTime lastSyncedAt;
+
     @Column(nullable=false,updatable=false)
     private LocalDateTime createdAt;
 
@@ -35,12 +47,12 @@ public class User {
 
     @PrePersist
     protected void onCreate() {
-        createdAt=LocalDateTime.now();
-        updatedAt=LocalDateTime.now();
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt=LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 }
