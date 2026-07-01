@@ -1,12 +1,14 @@
 package com.cpcompass.dto.recommendation;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RecommendationRequest {
 
     private List<String> topics;

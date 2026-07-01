@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RecommendationService {
 
+    private final RedisRecommendationService redisRecommendationService;
     private final UserRepository userRepository;
     private final SubmissionRepository submissionRepository;
     private final TopicAnalyticsRepository topicAnalyticsRepository;
@@ -38,7 +39,7 @@ public class RecommendationService {
     public RecommendationResponse generateRecommendation(
             RecommendationRequest request
     ) {
-
+//        long start = System.currentTimeMillis();
         User user = getCurrentUser();
 
         Set<String> solvedProblems =
@@ -71,6 +72,12 @@ public class RecommendationService {
                         ratingRange[1],
                         request
                 );
+
+//        System.out.println(
+//                "Recommendation took: "
+//                        + (System.currentTimeMillis() - start)
+//                        + " ms"
+//        );
         return RecommendationResponse.builder()
                 .contestId(
                         recommendedProblem.getContestId()
@@ -207,4 +214,56 @@ public class RecommendationService {
             default -> 0;
         };
     }
+
+    public RecommendationResponse getTodayRecommendation() {
+
+        User user = getCurrentUser();
+
+        RecommendationResponse cachedRecommendation =
+                redisRecommendationService.getRecommendation(
+                        user.getId()
+                );
+
+        if (cachedRecommendation != null) {
+
+            return cachedRecommendation;
+
+        }
+
+        RecommendationRequest request =
+                RecommendationRequest.builder()
+                        .build();
+
+        RecommendationResponse recommendation =
+                generateRecommendation(request);
+
+        redisRecommendationService.saveRecommendation(
+                user.getId(),
+                recommendation
+        );
+
+        return recommendation;
+
+    }
+
+    public RecommendationResponse generateAnotherRecommendation() {
+
+        User user = getCurrentUser();
+
+        RecommendationRequest request =
+                RecommendationRequest.builder()
+                        .build();
+
+        RecommendationResponse recommendation =
+                generateRecommendation(request);
+
+        redisRecommendationService.saveRecommendation(
+                user.getId(),
+                recommendation
+        );
+
+        return recommendation;
+
+    }
+
 }

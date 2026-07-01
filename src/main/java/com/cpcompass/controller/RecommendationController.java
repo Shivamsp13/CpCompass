@@ -21,5 +21,23 @@ public class RecommendationController {
         return recommendationService.generateRecommendation(
                 request
         );
+
     }
+
+    @GetMapping("/today")
+    public RecommendationResponse getTodayRecommendation() {
+
+        return recommendationService
+                .getTodayRecommendation();
+
+    }
+
+    @PostMapping("/generate-another")
+    public RecommendationResponse generateAnotherRecommendation() {
+
+        return recommendationService
+                .generateAnotherRecommendation();
+
+    }
+
 }

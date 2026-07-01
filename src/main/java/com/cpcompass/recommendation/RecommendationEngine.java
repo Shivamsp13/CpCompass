@@ -24,6 +24,9 @@ public class RecommendationEngine {
             RecommendationRequest request
     ) {
 
+//        long start = System.currentTimeMillis();
+
+
         List<CfProblemDto> filteredProblems =
                 removeInvalidProblems(problems);
 
@@ -94,6 +97,11 @@ public class RecommendationEngine {
                         minRating,
                         maxRating
                 );
+//        System.out.println(
+//                "Engine took: "
+//                        + (System.currentTimeMillis() - start)
+//                        + " ms"
+//        );
 
         return pickRandomProblem(filteredProblems);
     }
