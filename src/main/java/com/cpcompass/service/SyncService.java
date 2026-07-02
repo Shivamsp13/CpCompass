@@ -38,7 +38,7 @@ public class SyncService {
 
         User user = getCurrentUser();
 
-//        checkCooldown(user);
+        checkCooldown(user);
 
         syncProfile(user);
 
@@ -75,27 +75,27 @@ public class SyncService {
                         new RuntimeException("User not found"));
     }
 
-//    private void checkCooldown(User user) {
-//
-//        if (user.getLastSyncedAt() == null) {
-//            return;
-//        }
-//
-//        Duration duration =
-//                Duration.between(
-//                        user.getLastSyncedAt(),
-//                        LocalDateTime.now()
-//                );
-//
-//        if (duration.toMinutes() < 15) {
-//
-//            throw new RuntimeException(
-//                    "Sync available after "
-//                            + (15 - duration.toMinutes())
-//                            + " minutes"
-//            );
-//        }
-//    }
+    private void checkCooldown(User user) {
+
+        if (user.getLastSyncedAt() == null) {
+            return;
+        }
+
+        Duration duration =
+                Duration.between(
+                        user.getLastSyncedAt(),
+                        LocalDateTime.now()
+                );
+
+        if (duration.toMinutes() < 15) {
+
+            throw new RuntimeException(
+                    "Sync available after "
+                            + (15 - duration.toMinutes())
+                            + " minutes"
+            );
+        }
+    }
 
     private void syncProfile(User user) {
 

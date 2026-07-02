@@ -13,6 +13,8 @@ import java.util.List;
 @Builder
 public class DashboardResponse {
 
+    private long last30DaysSolved;
+    
     private Integer currentRating;
 
     private Integer maxRating;

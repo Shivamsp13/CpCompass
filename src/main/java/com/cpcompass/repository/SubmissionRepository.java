@@ -16,6 +16,11 @@ public interface SubmissionRepository
             Long userId
     );
 
+    long countByUserIdAndSolvedTrueAndSubmissionTimeAfter(
+            Long userId,
+            LocalDateTime submissionTime
+    );
+
     void deleteByUserId(Long userId);
 
     @Query("""

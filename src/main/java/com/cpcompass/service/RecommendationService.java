@@ -218,6 +218,7 @@ public class RecommendationService {
     public RecommendationResponse getTodayRecommendation() {
 
         User user = getCurrentUser();
+//        long start = System.nanoTime();
 
         RecommendationResponse cachedRecommendation =
                 redisRecommendationService.getRecommendation(
@@ -225,7 +226,13 @@ public class RecommendationService {
                 );
 
         if (cachedRecommendation != null) {
+            long end = System.nanoTime();
 
+//            System.out.println(
+//                    "Redis Cache HIT: "
+//                            + ((end - start) / 1_000_000.0)
+//                            + " ms"
+//            );
             return cachedRecommendation;
 
         }
@@ -241,6 +248,14 @@ public class RecommendationService {
                 user.getId(),
                 recommendation
         );
+        
+        long end = System.nanoTime();
+
+//        System.out.println(
+//                "Redis Cache MISS: "
+//                        + ((end - start) / 1_000_000.0)
+//                        + " ms"
+//        );
 
         return recommendation;
 

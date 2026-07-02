@@ -2,6 +2,7 @@ package com.cpcompass.service;
 
 import com.cpcompass.dto.dashboard.DashboardResponse;
 import com.cpcompass.entity.RatingBandAnalytics;
+import com.cpcompass.entity.Submission;
 import com.cpcompass.entity.TopicAnalytics;
 import com.cpcompass.entity.User;
 import com.cpcompass.repository.ContestRepository;
@@ -14,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
@@ -42,6 +44,17 @@ public class DashboardService {
                                 () -> new RuntimeException(
                                         "User not found"
                                 )
+                        );
+
+        long last30DaysSolved =
+                submissionRepository
+                        .countByUserIdAndSolvedTrueAndSubmissionTimeAfter(
+
+                                user.getId(),
+
+                                LocalDateTime.now()
+                                        .minusDays(30)
+
                         );
 
         List<TopicAnalytics> topics =
@@ -74,9 +87,16 @@ public class DashboardService {
                                                 submission.getSolved()
                                         )
                         )
+                        .map(
+                                Submission::getProblemKey
+                        )
+                        .distinct()
                         .count();
 
         return DashboardResponse.builder()
+                .last30DaysSolved(
+                        last30DaysSolved
+                )
                 .currentRating(
                         user.getCurrentRating()
                 )
