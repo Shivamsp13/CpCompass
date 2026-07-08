@@ -20,6 +20,9 @@ public interface SubmissionRepository
             Long userId,
             LocalDateTime submissionTime
     );
+    List<Submission> findByUserOrderBySubmissionTimeAsc(User user);
+    List<Submission> findByUserAndSolvedTrueOrderBySubmissionTimeAsc(User user);
+
 
     void deleteByUserId(Long userId);
 
@@ -72,6 +75,20 @@ public interface SubmissionRepository
             AND s.submissionTime BETWEEN :startTime AND :endTime
             """)
     List<Submission> findSolvedSubmissionsBetween(
+            @Param("user") User user,
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime
+    );
+
+
+    @Query("""
+        SELECT s
+        FROM Submission s
+        WHERE s.user = :user
+        AND s.solved = true
+        AND s.submissionTime BETWEEN :startTime AND :endTime
+        """)
+    List<Submission> findSolvedProblemsBetween(
             @Param("user") User user,
             @Param("startTime") LocalDateTime startTime,
             @Param("endTime") LocalDateTime endTime

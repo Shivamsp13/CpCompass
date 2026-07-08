@@ -87,11 +87,11 @@ public class SyncService {
                         LocalDateTime.now()
                 );
 
-        if (duration.toMinutes() < 15) {
+        if (duration.toMinutes() < 5) {
 
             throw new RuntimeException(
                     "Sync available after "
-                            + (15 - duration.toMinutes())
+                            + (5 - duration.toMinutes())
                             + " minutes"
             );
         }

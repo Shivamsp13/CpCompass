@@ -43,11 +43,13 @@ public class TopicInsightsService {
                 topicAnalyticsRepository
                         .findByUserId(user.getId())
                         .stream()
+                        .filter(topic ->
+                                topic.getAttempts() >= 5
+                        )
                         .sorted(
                                 Comparator.comparing(
-                                                TopicAnalytics::getAcceptanceRate
-                                        )
-                                        .reversed()
+                                        TopicAnalytics::getAcceptanceRate
+                                )
                         )
                         .map(
                                 topic ->

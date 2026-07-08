@@ -1,26 +1,22 @@
 package com.cpcompass.service;
 
 import com.cpcompass.dto.progressreview.ActivitySummaryResponse;
-import com.cpcompass.dto.progressreview.MetricComparisonDto;
-import com.cpcompass.dto.progressreview.ProgressComparisonResponse;
 import com.cpcompass.dto.progressreview.ProgressReviewResponse;
+import com.cpcompass.dto.progressreview.RatingDistributionDto;
 import com.cpcompass.entity.Submission;
 import com.cpcompass.entity.User;
 import com.cpcompass.repository.ContestRepository;
 import com.cpcompass.repository.SubmissionRepository;
 import com.cpcompass.repository.UserRepository;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalTime;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -38,83 +34,41 @@ public class ProgressReviewService {
 
         if (days == null || days <= 0) {
 
-            throw new RuntimeException(
-                    "Days must be greater than zero."
-            );
+            days = 30;
 
         }
 
-        User user =
-                getCurrentUser();
+        User user = getCurrentUser();
 
-        LocalDateTime currentEnd =
-                LocalDateTime.now();
+        LocalDate today = LocalDate.now();
 
-        LocalDateTime currentStart =
-                currentEnd.minusDays(days);
+        LocalDateTime startTime =
+                today.minusDays(days - 1).atStartOfDay();
 
-        LocalDateTime previousEnd =
-                currentStart;
-
-        LocalDateTime previousStart =
-                previousEnd.minusDays(days);
-
-        ProgressMetrics currentMetrics =
-                calculateMetrics(
-                        user,
-                        currentStart,
-                        currentEnd,
-                        days
-                );
-
-        ProgressMetrics previousMetrics =
-                calculateMetrics(
-                        user,
-                        previousStart,
-                        previousEnd,
-                        days
-                );
+        LocalDateTime endTime =
+                today.atTime(LocalTime.MAX);
 
         return ProgressReviewResponse
                 .builder()
                 .activitySummary(
                         buildActivitySummary(
-                                currentMetrics
-                        )
-                )
-                .progressComparison(
-                        buildProgressComparison(
-                                currentMetrics,
-                                previousMetrics
+                                user,
+                                startTime,
+                                endTime
                         )
                 )
                 .build();
 
     }
 
-    private ProgressMetrics calculateMetrics(
+    private ActivitySummaryResponse buildActivitySummary(
             User user,
             LocalDateTime startTime,
-            LocalDateTime endTime,
-            Integer days
+            LocalDateTime endTime
     ) {
 
         Long problemsSolved =
                 submissionRepository.countSolvedProblems(
-                        user,
-                        startTime,
-                        endTime
-                );
-
-        Double averageSolvedRating =
-                submissionRepository.findAverageSolvedRating(
-                        user,
-                        startTime,
-                        endTime
-                );
-
-        Integer highestSolvedRating =
-                submissionRepository.findHighestSolvedRating(
                         user,
                         startTime,
                         endTime
@@ -127,16 +81,12 @@ public class ProgressReviewService {
                         endTime
                 );
 
-        Long ratingChange =
+        Long ratingDelta =
                 contestRepository.findRatingChange(
                         user,
                         startTime,
                         endTime
                 );
-
-        Double averageProblemsPerDay =
-                problemsSolved.doubleValue()
-                        / days;
 
         List<Submission> solvedSubmissions =
                 submissionRepository.findSolvedSubmissionsBetween(
@@ -145,161 +95,235 @@ public class ProgressReviewService {
                         endTime
                 );
 
-        Set<String> uniqueTopics =
-                new HashSet<>();
+        List<Submission> allSolvedSubmissions =
+                submissionRepository
+                        .findByUserAndSolvedTrueOrderBySubmissionTimeAsc(
+                                user
+                        );
 
-        for (Submission submission : solvedSubmissions) {
-
-            if (submission.getTags() != null) {
-
-                uniqueTopics.addAll(
-                        submission.getTags()
-                );
-
-            }
-
-        }
-
-        return ProgressMetrics
+        return ActivitySummaryResponse
                 .builder()
                 .problemsSolved(
                         problemsSolved
-                )
-                .averageSolvedRating(
-                        averageSolvedRating
-                )
-                .highestSolvedRating(
-                        highestSolvedRating
                 )
                 .contestsParticipated(
                         contestsParticipated
                 )
                 .ratingChange(
-                        ratingChange
+                        ratingDelta.intValue()
                 )
-                .averageProblemsPerDay(
-                        averageProblemsPerDay
-                )
-                .uniqueTopicsSolved(
-                        (long) uniqueTopics.size()
-                )
-                .build();
-
-    }
-    private ActivitySummaryResponse buildActivitySummary(
-            ProgressMetrics metrics
-    ) {
-
-        return ActivitySummaryResponse
-                .builder()
-                .problemsSolved(
-                        metrics.getProblemsSolved()
-                )
-                .averageSolvedRating(
-                        metrics.getAverageSolvedRating()
-                )
-                .highestSolvedRating(
-                        metrics.getHighestSolvedRating()
-                )
-                .contestsParticipated(
-                        metrics.getContestsParticipated()
-                )
-                .averageProblemsPerDay(
-                        metrics.getAverageProblemsPerDay()
-                )
-                .build();
-
-    }
-
-    private ProgressComparisonResponse buildProgressComparison(
-            ProgressMetrics current,
-            ProgressMetrics previous
-    ) {
-
-        return ProgressComparisonResponse
-                .builder()
-                .problemsSolved(
-                        buildComparison(
-                                current.getProblemsSolved().doubleValue(),
-                                previous.getProblemsSolved().doubleValue()
+                .currentStreak(
+                        calculateCurrentStreak(
+                                allSolvedSubmissions
                         )
                 )
-                .averageSolvedRating(
-                        buildComparison(
-                                current.getAverageSolvedRating(),
-                                previous.getAverageSolvedRating()
+                .longestStreak(
+                        calculateLongestStreak(
+                                allSolvedSubmissions
                         )
                 )
-                .highestSolvedRating(
-                        buildComparison(
-                                current.getHighestSolvedRating() == null
-                                        ? null
-                                        : current.getHighestSolvedRating().doubleValue(),
-                                previous.getHighestSolvedRating() == null
-                                        ? null
-                                        : previous.getHighestSolvedRating().doubleValue()
-                        )
-                )
-                .ratingChange(
-                        buildComparison(
-                                current.getRatingChange().doubleValue(),
-                                previous.getRatingChange().doubleValue()
-                        )
-                )
-                .contestsParticipated(
-                        buildComparison(
-                                current.getContestsParticipated().doubleValue(),
-                                previous.getContestsParticipated().doubleValue()
-                        )
-                )
-                .averageProblemsPerDay(
-                        buildComparison(
-                                current.getAverageProblemsPerDay(),
-                                previous.getAverageProblemsPerDay()
-                        )
-                )
-                .uniqueTopicsSolved(
-                        buildComparison(
-                                current.getUniqueTopicsSolved().doubleValue(),
-                                previous.getUniqueTopicsSolved().doubleValue()
+                .ratingDistribution(
+                        buildRatingDistribution(
+                                solvedSubmissions
                         )
                 )
                 .build();
 
     }
 
-    private MetricComparisonDto buildComparison(
-            Double currentValue,
-            Double previousValue
+    private List<RatingDistributionDto> buildRatingDistribution(
+            List<Submission> solvedSubmissions
     ) {
 
-        Double change = null;
+        Map<Integer, Integer> distribution =
+                new TreeMap<>();
 
-        if (
-                currentValue != null
-                        &&
-                        previousValue != null
-        ) {
+        for (int rating = 800; rating <= 3500; rating += 100) {
 
-            change =
-                    currentValue
-                            -
-                            previousValue;
+            distribution.put(
+                    rating,
+                    0
+            );
 
         }
 
-        return MetricComparisonDto
-                .builder()
-                .currentValue(
-                        currentValue
-                )
-                .previousValue(
-                        previousValue
-                )
-                .change(
-                        change
-                )
-                .build();
+        Set<String> countedProblems =
+                new HashSet<>();
+
+        for (Submission submission : solvedSubmissions) {
+
+            if (submission.getProblemRating() == null) {
+
+                continue;
+
+            }
+
+            if (!countedProblems.add(
+                    submission.getProblemKey()
+            )) {
+
+                continue;
+
+            }
+
+            int bucket =
+                    (submission.getProblemRating() / 100) * 100;
+
+            if (bucket < 800 || bucket > 3500) {
+
+                continue;
+
+            }
+
+            distribution.put(
+                    bucket,
+                    distribution.get(bucket) + 1
+            );
+
+        }
+
+        List<RatingDistributionDto> result =
+                new ArrayList<>();
+
+        for (Map.Entry<Integer, Integer> entry :
+                distribution.entrySet()) {
+
+            result.add(
+
+                    RatingDistributionDto
+                            .builder()
+                            .rating(
+                                    entry.getKey()
+                            )
+                            .solved(
+                                    entry.getValue()
+                            )
+                            .build()
+
+            );
+
+        }
+
+        return result;
+
+    }
+
+    private Integer calculateCurrentStreak(
+            List<Submission> solvedSubmissions
+    ) {
+
+        if (solvedSubmissions.isEmpty()) {
+
+            return 0;
+
+        }
+
+        Set<LocalDate> solvedDays =
+                new HashSet<>();
+
+        for (Submission submission : solvedSubmissions) {
+
+            solvedDays.add(
+                    submission
+                            .getSubmissionTime()
+                            .toLocalDate()
+            );
+
+        }
+
+        LocalDate today =
+                LocalDate.now();
+
+        LocalDate currentDay;
+
+        if (solvedDays.contains(today)) {
+
+            currentDay = today;
+
+        }
+
+        else if (solvedDays.contains(
+                today.minusDays(1)
+        )) {
+
+            currentDay = today.minusDays(1);
+
+        }
+
+        else {
+
+            return 0;
+
+        }
+
+        int streak = 0;
+
+        while (solvedDays.contains(currentDay)) {
+
+            streak++;
+
+            currentDay =
+                    currentDay.minusDays(1);
+
+        }
+
+        return streak;
+
+    }
+    private Integer calculateLongestStreak(
+            List<Submission> solvedSubmissions
+    ) {
+
+        if (solvedSubmissions.isEmpty()) {
+
+            return 0;
+
+        }
+
+        Set<LocalDate> solvedDays =
+                new TreeSet<>();
+
+        for (Submission submission : solvedSubmissions) {
+
+            solvedDays.add(
+                    submission
+                            .getSubmissionTime()
+                            .toLocalDate()
+            );
+
+        }
+
+        int longest = 1;
+
+        int current = 1;
+
+        LocalDate previous = null;
+
+        for (LocalDate date : solvedDays) {
+
+            if (previous != null &&
+                    previous.plusDays(1).equals(date)) {
+
+                current++;
+
+            }
+
+            else if (previous != null) {
+
+                current = 1;
+
+            }
+
+            longest = Math.max(
+                    longest,
+                    current
+            );
+
+            previous = date;
+
+        }
+
+        return longest;
 
     }
 
@@ -314,35 +338,13 @@ public class ProgressReviewService {
                 authentication.getName();
 
         return userRepository
-                .findByEmail(
-                        email
-                )
+                .findByEmail(email)
                 .orElseThrow(
-                        () -> new RuntimeException(
-                                "User not found"
-                        )
+                        () ->
+                                new RuntimeException(
+                                        "User not found"
+                                )
                 );
-
-    }
-
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    private static class ProgressMetrics {
-
-        private Long problemsSolved;
-
-        private Double averageSolvedRating;
-
-        private Integer highestSolvedRating;
-
-        private Long contestsParticipated;
-
-        private Long ratingChange;
-
-        private Double averageProblemsPerDay;
-
-        private Long uniqueTopicsSolved;
 
     }
 

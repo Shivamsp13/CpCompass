@@ -9,12 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MetricComparisonDto {
+public class RatingBandActivityDto {
 
-    private Double currentValue;
+    private String ratingBand;
 
-    private Double previousValue;
-
-    private Double change;
+    private Integer solved;
 
 }
