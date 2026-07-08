@@ -8,12 +8,13 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import org.springframework.beans.factory.annotation.Value;
 
 @Service
 public class JwtService{
 
-    private static final String SECRET_KEY =
-            "mySuperSecretKeyForCpCompassApplication123456789";
+    @Value("${JWT_SECRET}")
+    private String secretKey;
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(
