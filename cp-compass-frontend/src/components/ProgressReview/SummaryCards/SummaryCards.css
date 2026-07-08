@@ -1,0 +1,105 @@
+.summary-cards {
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 24px;
+
+}
+
+.summary-card {
+
+    background: #242d3b;
+
+    border-radius: 18px;
+
+    padding: 28px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 18px;
+
+    transition: .25s;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,.25);
+
+}
+
+.summary-card:hover {
+
+    transform: translateY(-4px);
+
+}
+
+.summary-icon {
+
+    width: 52px;
+
+    height: 52px;
+
+    border-radius: 12px;
+
+    background: rgba(37,99,235,.15);
+
+    color: #3b82f6;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+.summary-icon svg {
+
+    font-size: 28px;
+
+}
+
+.summary-title {
+
+    color: #9ca3af;
+
+    font-size: .95rem;
+
+    font-weight: 500;
+
+}
+
+.summary-card h2 {
+
+    margin: 0;
+
+    color: white;
+
+    font-size: 2.2rem;
+
+    font-weight: 700;
+
+}
+
+.positive-rating {
+
+    color: #22c55e !important;
+
+}
+
+.negative-rating {
+
+    color: #ef4444 !important;
+
+}
+
+@media(max-width:900px){
+
+    .summary-cards{
+
+        grid-template-columns:1fr;
+
+    }
+
+}

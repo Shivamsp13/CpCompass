@@ -1,0 +1,132 @@
+.current-focus-card {
+
+    background: var(--surface-color);
+
+    border-radius: var(--border-radius);
+
+    padding: 28px;
+
+    box-shadow: var(--card-shadow);
+
+    border: 1px solid var(--border-color);
+
+}
+
+.current-focus-title {
+
+    font-size: 1.6rem;
+
+    font-weight: 700;
+
+    color: var(--text-primary);
+
+    margin-bottom: 28px;
+
+}
+
+.current-focus-content {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+}
+
+.focus-item {
+
+    flex: 1;
+
+    text-align: center;
+
+}
+
+.focus-icon {
+
+    width: 56px;
+
+    height: 56px;
+
+    border-radius: 50%;
+
+    background: rgba(20, 184, 166, 0.15);
+
+    color: var(--primary-color);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 22px;
+
+    margin: 0 auto 14px;
+
+}
+
+.focus-icon.warning {
+
+    background: rgba(245, 158, 11, 0.15);
+
+    color: var(--warning-color);
+
+}
+
+.focus-icon.success {
+
+    background: rgba(34, 197, 94, 0.15);
+
+    color: var(--success-color);
+
+}
+
+.focus-label {
+
+    color: var(--text-secondary);
+
+    font-size: 0.95rem;
+
+    margin-bottom: 8px;
+
+}
+.focus-value {
+
+    color: var(--text-primary);
+
+    font-size: 1.45rem;
+
+    font-weight: 700;
+
+}
+
+.focus-divider {
+
+    width: 1px;
+
+    height: 90px;
+
+    background: var(--border-color);
+
+}
+
+@media (max-width: 768px) {
+
+    .current-focus-content {
+
+        flex-direction: column;
+
+        gap: 24px;
+
+    }
+
+    .focus-divider {
+
+        width: 100%;
+
+        height: 1px;
+
+    }
+
+}

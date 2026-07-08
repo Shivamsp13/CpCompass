@@ -1,0 +1,313 @@
+.recommendation-filters {
+
+    background: var(--surface-color);
+
+    border: 1px solid var(--border-color);
+
+    border-radius: var(--border-radius);
+
+    padding: 30px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 28px;
+
+    width: 100%;
+
+    box-shadow: var(--card-shadow);
+
+}
+
+.recommendation-filters h2 {
+
+    margin: 0;
+
+    color: var(--text-primary);
+
+    font-size: 1.5rem;
+
+}
+
+.filter-group {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+}
+
+.filter-group > label {
+
+    color: var(--text-secondary);
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+}
+
+.filters-row {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1.4fr 1.5fr;
+
+    gap: 28px;
+
+    align-items: start;
+
+}
+
+.mode-options {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+}
+
+.mode-options label {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    color: var(--text-primary);
+
+    cursor: pointer;
+
+}
+
+.mode-options input {
+
+    accent-color: var(--primary-color);
+
+}
+
+.slider-values {
+
+    display: flex;
+
+    justify-content: center;
+
+    margin-top: 10px;
+
+    color: var(--text-primary);
+
+    font-weight: 600;
+
+}
+
+.MuiSlider-root {
+
+    color: var(--primary-color) !important;
+
+}
+
+.MuiSlider-thumb {
+
+    width: 18px !important;
+
+    height: 18px !important;
+
+    background: var(--text-primary) !important;
+
+    border: 3px solid var(--primary-color) !important;
+
+}
+
+.MuiSlider-track {
+
+    border: none !important;
+
+}
+
+.MuiSlider-rail {
+
+    background: var(--surface-hover-color) !important;
+
+}
+
+.select__control {
+
+    background: var(--background-color) !important;
+
+    border: 1px solid var(--border-color) !important;
+
+    min-height: 46px;
+
+    box-shadow: none !important;
+
+    border-radius: 10px !important;
+
+}
+
+.select__menu {
+
+    background: var(--surface-color) !important;
+
+    border: 1px solid var(--border-color) !important;
+
+}
+
+.select__option {
+
+    background: var(--surface-color) !important;
+
+    color: var(--text-primary) !important;
+
+}
+
+.select__option--is-focused {
+
+    background: var(--surface-hover-color) !important;
+
+}
+
+.select__option--is-selected {
+
+    background: var(--primary-color) !important;
+
+    color: #0B1120 !important;
+
+}
+
+.select__single-value {
+
+    color: var(--text-primary) !important;
+
+}
+
+.select__placeholder {
+
+    color: var(--text-secondary) !important;
+
+}
+
+.select__input-container {
+
+    color: var(--text-primary) !important;
+
+}
+
+.select__multi-value {
+
+    background: var(--primary-color) !important;
+
+    border-radius: 6px;
+
+}
+
+.select__multi-value__label {
+
+    color: #0B1120 !important;
+
+    font-weight: 600;
+
+}
+
+.select__multi-value__remove {
+
+    color: #0B1120 !important;
+
+}
+
+.select__multi-value__remove:hover {
+
+    background: var(--primary-color-hover) !important;
+
+    color: #0B1120 !important;
+
+}
+
+.recommendation-filters button[type="submit"] {
+
+    margin-top: 10px;
+
+    align-self: flex-end;
+
+    width: 240px;
+
+    height: 50px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: var(--primary-gradient);
+
+    color: #0B1120;
+
+    font-size: .95rem;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: var(--transition);
+
+}
+
+.recommendation-filters button[type="submit"]:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 6px 18px rgba(20,184,166,.3);
+
+}
+
+.smart-message {
+
+    background: var(--background-color);
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 10px;
+
+    padding: 18px 20px;
+
+    min-height: 140px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    gap: 14px;
+
+}
+
+.smart-message p {
+
+    margin: 0;
+
+    color: var(--text-secondary);
+
+    font-size: .95rem;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+}
+
+.check-icon {
+
+    color: var(--primary-color);
+
+    font-size: 16px;
+
+    flex-shrink: 0;
+
+}

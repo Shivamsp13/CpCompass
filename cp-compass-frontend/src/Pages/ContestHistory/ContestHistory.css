@@ -1,0 +1,16 @@
+.contest-history-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.contest-history-header {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.page-subtitle {
+    color: #cbd5e1;
+    line-height: 1.6;
+}

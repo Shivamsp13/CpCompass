@@ -1,0 +1,205 @@
+.sidebar {
+
+    width: 250px;
+
+    min-height: 100vh;
+
+    background: var(--surface-color);
+
+    border-right: 1px solid var(--border-color);
+
+    padding: 30px 20px;
+
+}
+
+.logo {
+
+    color: var(--primary-color);
+
+    margin-bottom: 50px;
+
+    text-align: center;
+
+    font-size: 28px;
+
+    font-weight: 700;
+
+}
+
+.sidebar-nav {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+}
+
+.nav-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 14px 18px;
+
+    border-radius: var(--border-radius);
+
+    color: var(--text-secondary);
+
+    transition: var(--transition);
+
+    text-decoration: none;
+
+}
+
+.nav-item:hover {
+
+    background: var(--surface-hover-color);
+
+    color: var(--text-primary);
+
+}
+
+.nav-item.active {
+
+    background: var(--primary-color);
+
+    color: white;
+
+}
+
+.sidebar-divider {
+
+    border: none;
+
+    border-top: 1px solid #374151;
+
+    margin: 18px 0;
+
+}
+
+.sync-button {
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    background: #2563eb;
+
+    color: white;
+
+    border: none;
+
+    border-radius: 10px;
+
+    padding: 12px;
+
+    cursor: pointer;
+
+    font-size: .95rem;
+
+    font-weight: 600;
+
+    transition: .2s;
+
+}
+
+.sync-button:hover {
+
+    background: #1d4ed8;
+
+}
+
+.sync-button:disabled {
+
+    opacity: .7;
+
+    cursor: not-allowed;
+
+}
+
+.last-sync-card {
+
+    margin-top: 18px;
+
+    padding: 12px;
+
+    border-radius: 10px;
+
+    background: #1f2937;
+
+}
+
+.last-sync-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: #d1d5db;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+}
+
+.last-sync-time {
+
+    margin-top: 8px;
+
+    color: #9ca3af;
+
+    font-size: 13px;
+
+}
+
+.logout-button {
+
+    width: 100%;
+
+    margin-top: 18px;
+
+    padding: 12px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #dc2626;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    cursor: pointer;
+
+    font-weight: 600;
+
+    transition: 0.2s;
+
+}
+
+.logout-button:hover {
+
+    background: #b91c1c;
+
+}

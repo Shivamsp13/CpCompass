@@ -1,0 +1,27 @@
+.primary-button{
+
+    background:var(--primary-color);
+
+    color:white;
+
+    border:none;
+
+    padding:12px 20px;
+
+    border-radius:10px;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:var(--transition);
+
+}
+
+.primary-button:hover{
+
+    opacity:.9;
+
+}

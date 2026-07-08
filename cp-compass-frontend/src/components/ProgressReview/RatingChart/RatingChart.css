@@ -1,0 +1,117 @@
+.rating-chart-card {
+
+    background: #242d3b;
+
+    border-radius: 18px;
+
+    padding: 36px;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,.25);
+
+}
+
+.rating-chart-header {
+
+    margin-bottom: 30px;
+
+}
+
+.rating-chart-scroll {
+
+    overflow-x: auto;
+
+    padding-bottom: 4px;
+
+}
+
+.rating-chart-scroll::-webkit-scrollbar {
+
+    height: 8px;
+
+}
+
+.rating-chart-scroll::-webkit-scrollbar-thumb {
+
+    background: #374151;
+
+    border-radius: 4px;
+
+}
+
+.rating-chart-scroll::-webkit-scrollbar-track {
+
+    background: transparent;
+
+}
+
+.rating-chart-header h2 {
+
+    margin: 0;
+
+    color: white;
+
+    font-size: 1.5rem;
+
+}
+
+.rating-chart-header p {
+
+    margin-top: 8px;
+
+    color: #9ca3af;
+
+}
+
+.rating-tooltip {
+
+    background: #1b2432;
+
+    border: 1px solid #374151;
+
+    border-radius: 14px;
+
+    padding: 14px 18px;
+
+    min-width: 170px;
+
+    box-shadow: 0 12px 24px rgba(0,0,0,.35);
+
+}
+
+.rating-tooltip h4 {
+
+    margin: 0 0 12px;
+
+    color: white;
+
+    font-size: 1rem;
+
+}
+
+.tooltip-content {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 18px;
+
+}
+
+.tooltip-content span {
+
+    color: #9ca3af;
+
+}
+
+.tooltip-content strong {
+
+    color: #22c55e;
+
+}
+
+.recharts-tooltip-wrapper {
+
+    outline: none;
+
+}

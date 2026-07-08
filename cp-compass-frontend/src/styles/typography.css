@@ -1,0 +1,46 @@
+.page-title{
+
+    font-size:32px;
+
+    font-weight:700;
+
+}
+
+.card-title{
+
+    font-size:18px;
+
+    font-weight:600;
+
+}
+
+.stat-number{
+
+    font-size:32px;
+
+    font-weight:700;
+
+}
+
+.label{
+
+    font-size:14px;
+
+    color:var(--text-secondary);
+
+}
+
+.body-text{
+
+    font-size:16px;
+
+}
+.page-subtitle{
+
+    font-size:18px;
+
+    color:var(--text-secondary);
+
+    margin-top:6px;
+
+}

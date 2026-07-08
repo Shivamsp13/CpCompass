@@ -1,0 +1,55 @@
+:root {
+
+    /* ========== COLORS ========== */
+
+    --background-color: #0B1120;
+
+    --surface-color: #131B2E;
+
+    --surface-hover-color: #1C2942;
+
+    --primary-color: #14B8A6;
+
+    --primary-color-hover: #0D9488;
+
+    --primary-gradient: linear-gradient(135deg, #2DD4BF 0%, #22C55E 100%);
+
+    --success-color: #22C55E;
+
+    --warning-color: #F59E0B;
+
+    --danger-color: #F87171;
+
+    --text-primary: #F8FAFC;
+
+    --text-secondary: #94A3B8;
+
+    --border-color: #1E293B;
+
+    /* ========== BORDER RADIUS ========== */
+
+    --border-radius: 14px;
+
+    /* ========== SHADOW ========== */
+
+    --card-shadow:
+            0 4px 16px rgba(0,0,0,0.35);
+
+    /* ========== TRANSITIONS ========== */
+
+    --transition:
+            all 0.25s ease;
+
+    /* ========== SPACING ========== */
+
+    --space-xs: 8px;
+
+    --space-sm: 16px;
+
+    --space-md: 24px;
+
+    --space-lg: 32px;
+
+    --space-xl: 48px;
+
+}
