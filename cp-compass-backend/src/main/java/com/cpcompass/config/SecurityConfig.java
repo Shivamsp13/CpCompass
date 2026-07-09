@@ -18,6 +18,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+
+    @Value("${FRONTEND_URL:http://localhost:5173}")
+    private String frontendUrl;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
@@ -58,7 +61,7 @@ public class SecurityConfig {
                 new CorsConfiguration();
 
         configuration.setAllowedOrigins(
-                List.of("http://localhost:5173")
+                List.of(frontendUrl)
         );
 
         configuration.setAllowedMethods(
