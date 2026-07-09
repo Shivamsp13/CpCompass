@@ -3,7 +3,6 @@ package com.cpcompass.service;
 import com.cpcompass.entity.User;
 import com.cpcompass.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,14 +18,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
 
-        com.cpcompass.entity.User user =
-                userRepository.findByEmail(email)
-                        .orElseThrow(() ->
-                                new UsernameNotFoundException(
-                                        "User not found"
-                                ));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found")
+                );
 
-        return User.builder()
+        return org.springframework.security.core.userdetails.User
+                .builder()
                 .username(user.getEmail())
                 .password(user.getPassword())
                 .authorities("USER")
