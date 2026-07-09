@@ -28,7 +28,7 @@ public class AnalyticsService {
 
         List<Submission> submissions =
                 submissionRepository
-                        .findByUserIdOrderBySubmissionTimeDesc(
+                        .findByUserIdWithTagsOrderBySubmissionTimeDesc(
                                 user.getId()
                         );
 

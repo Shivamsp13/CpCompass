@@ -28,6 +28,13 @@ public interface ContestRepository extends JpaRepository<Contest, Long> {
     );
 
     @Query("""
+       SELECT c.cfContestId
+       FROM Contest c
+       WHERE c.user.id = :userId
+       """)
+    List<Long> findContestIdsByUserId(Long userId);
+
+    @Query("""
             SELECT COALESCE(SUM(c.ratingChange), 0)
             FROM Contest c
             WHERE c.user = :user

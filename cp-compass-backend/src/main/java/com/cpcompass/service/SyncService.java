@@ -35,23 +35,44 @@ public class SyncService {
     private final AnalyticsService analyticsService;
 
     public SyncResponse syncCurrentUser() {
-
+        long start1 = System.currentTimeMillis();
         User user = getCurrentUser();
 
         checkCooldown(user);
-
         syncProfile(user);
 
+//        long start2 = System.currentTimeMillis();
         int contestsSynced = syncContests(user);
+//        System.out.println("contestsSynced took: "
+//                + (System.currentTimeMillis() - start2) + " ms");
 
+
+//        long start3 = System.currentTimeMillis();
         int submissionsSynced = syncSubmissions(user);
+//        System.out.println("submissionsSynced took: "
+//                + (System.currentTimeMillis() - start3) + " ms");
 
+
+//        long start4 = System.currentTimeMillis();
         analyticsService.computeTopicAnalytics(user);
+//        System.out.println("computeTopicAnalytics took: "
+//                + (System.currentTimeMillis() - start4) + " ms");
+
+
+//        long start5 = System.currentTimeMillis();
         analyticsService.computeRatingBandAnalytics(user);
+//        System.out.println("computeRatingBandAnalytics took: "
+//                + (System.currentTimeMillis() - start5) + " ms");
 
         user.setLastSyncedAt(LocalDateTime.now());
 
+//        long start6 = System.currentTimeMillis();
         userRepository.save(user);
+//        System.out.println("DB save took: "
+//                + (System.currentTimeMillis() - start6) + " ms");
+
+//        System.out.println("total time took: "
+//                + (System.currentTimeMillis() - start1) + " ms");
 
         return new SyncResponse(
                 "Sync completed successfully",
@@ -99,6 +120,7 @@ public class SyncService {
 
     private void syncProfile(User user) {
 
+//        System.out.println("Calling Codeforces user.info");
         CfUserInfoResponse response =
                 codeforcesClient.getUserInfo(
                         user.getCodeforcesHandle()
@@ -139,10 +161,7 @@ public class SyncService {
 
     private int syncContests(User user) {
 
-        contestRepository.deleteByUserId(
-                user.getId()
-        );
-        contestRepository.flush();
+//        System.out.println("Calling Codeforces contests");
 
         CfContestResponse response =
                 codeforcesClient.getContestHistory(
@@ -151,14 +170,24 @@ public class SyncService {
 
         if (response == null ||
                 response.getResult() == null) {
-
             return 0;
         }
 
-        List<Contest> contests =
+        Set<Long> existingContestIds =
+                new HashSet<>(
+                        contestRepository.findContestIdsByUserId(
+                                user.getId()
+                        )
+                );
+
+        List<Contest> newContests =
                 new ArrayList<>();
 
         for (CfContestDto dto : response.getResult()) {
+
+            if (existingContestIds.contains(dto.getContestId().longValue())) {
+                break;
+            }
 
             Contest contest =
                     Contest.builder()
@@ -197,95 +226,90 @@ public class SyncService {
                             .user(user)
                             .build();
 
-            contests.add(contest);
+            newContests.add(contest);
         }
 
-        contestRepository.saveAll(contests);
+        if (newContests.isEmpty()) {
+            return 0;
+        }
 
-        return contests.size();
+        contestRepository.saveAll(newContests);
+
+        return newContests.size();
     }
 
     private int syncSubmissions(User user) {
 
-        submissionRepository.deleteByUserId(
-                user.getId()
-        );
-        submissionRepository.flush();
+//        System.out.println("Calling Codeforces submission");
+
+        long start = System.currentTimeMillis();
 
         CfSubmissionResponse response =
                 codeforcesClient.getSubmissions(
                         user.getCodeforcesHandle()
                 );
 
-        if (response == null ||
-                response.getResult() == null) {
+//        System.out.println("Codeforces API took "
+//                + (System.currentTimeMillis() - start) + " ms");
 
+        if (response == null || response.getResult() == null) {
             return 0;
         }
 
-        List<CfSubmissionDto> cfSubmissions =
-                response.getResult();
-
-        int limit =
-                Math.min(
-                        2000,
-                        cfSubmissions.size()
+        // Fetch existing submission IDs once
+        Set<Long> existingIds =
+                new HashSet<>(
+                        submissionRepository.findSubmissionIdsByUserId(
+                                user.getId()
+                        )
                 );
 
-        List<Submission> submissions =
-                new ArrayList<>();
+        List<Submission> newSubmissions = new ArrayList<>();
 
-        for (int i = 0; i < limit; i++) {
+        List<CfSubmissionDto> cfSubmissions = response.getResult();
 
-            CfSubmissionDto dto =
-                    cfSubmissions.get(i);
+        for (CfSubmissionDto dto : cfSubmissions) {
 
             if (dto.getProblem() == null ||
                     dto.getProblem().getContestId() == null) {
-
                 continue;
+            }
+
+            // Codeforces returns newest first.
+            // As soon as we find an existing submission,
+            // every remaining submission is already synced.
+            if (existingIds.contains(dto.getId())) {
+                break;
             }
 
             Submission submission =
                     Submission.builder()
-                            .cfSubmissionId(
-                                    dto.getId()
-                            )
+                            .cfSubmissionId(dto.getId())
                             .problemKey(
-                                    dto.getProblem()
-                                            .getContestId()
+                                    dto.getProblem().getContestId()
                                             + "_"
-                                            + dto.getProblem()
-                                            .getIndex()
+                                            + dto.getProblem().getIndex()
                             )
                             .cfContestId(
-                                    dto.getProblem()
-                                            .getContestId()
-                                            .longValue()
+                                    dto.getProblem().getContestId().longValue()
                             )
                             .problemIndex(
-                                    dto.getProblem()
-                                            .getIndex()
+                                    dto.getProblem().getIndex()
                             )
                             .problemName(
-                                    dto.getProblem()
-                                            .getName()
+                                    dto.getProblem().getName()
                             )
                             .problemRating(
-                                    dto.getProblem()
-                                            .getRating()
+                                    dto.getProblem().getRating()
                             )
                             .tags(
-                                    dto.getProblem()
-                                            .getTags()
+                                    dto.getProblem().getTags()
                             )
                             .rawVerdict(
                                     dto.getVerdict()
                             )
                             .solved(
-                                    "OK".equals(
-                                            dto.getVerdict()
-                                    )
+                                    "OK".equals(dto.getVerdict())
                             )
                             .programmingLanguage(
                                     dto.getProgrammingLanguage()
@@ -301,27 +325,21 @@ public class SyncService {
                             .user(user)
                             .build();
 
-            submissions.add(submission);
+            newSubmissions.add(submission);
         }
 
-        Set<Long> ids = new HashSet<>();
-
-        for (Submission s : submissions) {
-
-            if (!ids.add(s.getCfSubmissionId())) {
-
-                System.out.println(
-                        "DUPLICATE FOUND: "
-                                + s.getCfSubmissionId()
-                );
-            }
+        if (newSubmissions.isEmpty()) {
+            return 0;
         }
 
-        submissionRepository.saveAll(
-                submissions
-        );
+//        start = System.currentTimeMillis();
 
-        return submissions.size();
+        submissionRepository.saveAll(newSubmissions);
+
+//        System.out.println("DB save took "
+//                + (System.currentTimeMillis() - start) + " ms");
+
+        return newSubmissions.size();
     }
 
     private String determineContestType(

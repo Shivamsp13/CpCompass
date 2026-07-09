@@ -15,6 +15,9 @@ public interface SubmissionRepository
     List<Submission> findByUserIdOrderBySubmissionTimeDesc(
             Long userId
     );
+
+    boolean existsByCfSubmissionId(Long cfSubmissionId);
+
     List<Submission> findByUserAndSolvedTrue(User user);
     long countByUserIdAndSolvedTrueAndSubmissionTimeAfter(
             Long userId,
@@ -38,6 +41,24 @@ public interface SubmissionRepository
             @Param("startTime") LocalDateTime startTime,
             @Param("endTime") LocalDateTime endTime
     );
+    @Query("""
+       SELECT DISTINCT s
+       FROM Submission s
+       LEFT JOIN FETCH s.tags
+       WHERE s.user.id = :userId
+       ORDER BY s.submissionTime DESC
+       """)
+    List<Submission> findByUserIdWithTagsOrderBySubmissionTimeDesc(
+            @Param("userId") Long userId
+    );
+
+    @Query("""
+       SELECT s.cfSubmissionId
+       FROM Submission s
+       WHERE s.user.id = :userId
+       """)
+    List<Long> findSubmissionIdsByUserId(Long userId);
+
 
     @Query("""
             SELECT AVG(s.problemRating)

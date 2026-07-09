@@ -12,13 +12,14 @@ import org.springframework.web.bind.annotation.*;
 public class SyncController {
 
     private final SyncService syncService;
-
     @PostMapping
     public ResponseEntity<SyncResponse> sync() {
 
+//        System.out.println("SYNC STARTED");
         SyncResponse response =
                 syncService.syncCurrentUser();
 
+//        System.out.println("SYNC FINAL END");
         return ResponseEntity.ok(response);
     }
 }

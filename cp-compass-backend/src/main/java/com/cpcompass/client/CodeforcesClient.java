@@ -60,6 +60,8 @@ public class CodeforcesClient {
 
     public CfSubmissionResponse getSubmissions(String handle) {
 
+//        System.out.println("inside getsubimssion");
+
         String url =
                 BASE_URL + "/user.status?handle=" + handle;
 
@@ -68,6 +70,7 @@ public class CodeforcesClient {
                 CfSubmissionResponse.class
         );
     }
+
     public CfProblemsetResponse getProblemset() {
 
         String url =
