@@ -5,7 +5,6 @@ const api = axios.create({
     baseURL: "http://13.48.43.189/api",
 
     headers: {
-
         "Content-Type": "application/json"
 
     }
