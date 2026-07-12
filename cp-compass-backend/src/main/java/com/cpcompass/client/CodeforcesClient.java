@@ -61,12 +61,15 @@ public class CodeforcesClient {
     public CfSubmissionResponse getSubmissions(String handle) {
 
 //        System.out.println("inside getsubimssion");
-
+        long start = System.currentTimeMillis();
         String url =
                 BASE_URL
                         + "/user.status?handle="
                         + handle
                         + "&from=1&count=2000";
+
+        System.out.println("HTTP user.status took: "
+                + (System.currentTimeMillis() - start) + " ms");
 
         return restTemplate.getForObject(
                 url,
