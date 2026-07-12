@@ -29,7 +29,7 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(
             @Valid @RequestBody LoginRequest request
     ) {
-
+        System.out.println("Recieved login request");
         return ResponseEntity.ok(
                 authService.login(request)
         );
