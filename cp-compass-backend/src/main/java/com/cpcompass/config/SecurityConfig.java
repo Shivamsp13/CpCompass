@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 public class SecurityConfig {
 
 
-    @Value("${FRONTEND_URL=https://cp-compass.vercel.app}")
+    @Value("${FRONTEND_URL:https://cp-compass.vercel.app}")
     private String frontendUrl;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -56,7 +56,7 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-
+        System.out.println("FRONTEND_URL = " + frontendUrl);
         CorsConfiguration configuration =
                 new CorsConfiguration();
 
