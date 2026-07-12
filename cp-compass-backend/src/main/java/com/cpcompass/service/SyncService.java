@@ -40,7 +40,7 @@ public class SyncService {
 
         checkCooldown(user);
         syncProfile(user);
-
+        System.out.println("SYNC STARTED");
         long start2 = System.currentTimeMillis();
         int contestsSynced = syncContests(user);
         System.out.println("contestsSynced took: "

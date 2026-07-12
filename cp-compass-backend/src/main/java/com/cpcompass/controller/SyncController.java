@@ -15,7 +15,7 @@ public class SyncController {
     @PostMapping
     public ResponseEntity<SyncResponse> sync() {
 
-//        System.out.println("SYNC STARTED");
+        System.out.println("========== ENTERED SYNC CONTROLLER ==========");
         SyncResponse response =
                 syncService.syncCurrentUser();
 
