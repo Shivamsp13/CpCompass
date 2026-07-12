@@ -41,38 +41,38 @@ public class SyncService {
         checkCooldown(user);
         syncProfile(user);
 
-//        long start2 = System.currentTimeMillis();
+        long start2 = System.currentTimeMillis();
         int contestsSynced = syncContests(user);
-//        System.out.println("contestsSynced took: "
-//                + (System.currentTimeMillis() - start2) + " ms");
+        System.out.println("contestsSynced took: "
+                + (System.currentTimeMillis() - start2) + " ms");
 
 
-//        long start3 = System.currentTimeMillis();
+        long start3 = System.currentTimeMillis();
         int submissionsSynced = syncSubmissions(user);
-//        System.out.println("submissionsSynced took: "
-//                + (System.currentTimeMillis() - start3) + " ms");
+        System.out.println("submissionsSynced took: "
+                + (System.currentTimeMillis() - start3) + " ms");
 
 
-//        long start4 = System.currentTimeMillis();
+        long start4 = System.currentTimeMillis();
         analyticsService.computeTopicAnalytics(user);
-//        System.out.println("computeTopicAnalytics took: "
-//                + (System.currentTimeMillis() - start4) + " ms");
+        System.out.println("computeTopicAnalytics took: "
+                + (System.currentTimeMillis() - start4) + " ms");
 
 
-//        long start5 = System.currentTimeMillis();
+        long start5 = System.currentTimeMillis();
         analyticsService.computeRatingBandAnalytics(user);
-//        System.out.println("computeRatingBandAnalytics took: "
-//                + (System.currentTimeMillis() - start5) + " ms");
+        System.out.println("computeRatingBandAnalytics took: "
+                + (System.currentTimeMillis() - start5) + " ms");
 
         user.setLastSyncedAt(LocalDateTime.now());
 
-//        long start6 = System.currentTimeMillis();
+        long start6 = System.currentTimeMillis();
         userRepository.save(user);
-//        System.out.println("DB save took: "
-//                + (System.currentTimeMillis() - start6) + " ms");
+        System.out.println("DB save took: "
+                + (System.currentTimeMillis() - start6) + " ms");
 
-//        System.out.println("total time took: "
-//                + (System.currentTimeMillis() - start1) + " ms");
+        System.out.println("total time took: "
+                + (System.currentTimeMillis() - start1) + " ms");
 
         return new SyncResponse(
                 "Sync completed successfully",
