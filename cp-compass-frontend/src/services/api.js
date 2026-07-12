@@ -2,7 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
 
-    baseURL: "http://13.48.43.189/api",
+    baseURL: "https://cp-compass.duckdns.org/api",
 
     headers: {
         "Content-Type": "application/json"
