@@ -1,8 +1,34 @@
 import { useLocation } from "react-router-dom";
 
+import { useEffect, useState } from "react";
+import { getCurrentUser } from "../../services/userService";
 import "./Navbar.css";
 
 function Navbar() {
+
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+
+        const fetchUser = async () => {
+
+            try {
+
+                const data = await getCurrentUser();
+
+                setUser(data);
+
+            } catch (error) {
+
+                console.error(error);
+
+            }
+
+        };
+
+        fetchUser();
+
+    }, []);
 
     const location = useLocation();
 
@@ -31,7 +57,7 @@ function Navbar() {
 
             <div className="user-section">
 
-                👤 Shivam
+                👤 {user?.codeforcesHandle}
 
             </div>
 
