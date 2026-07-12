@@ -163,10 +163,14 @@ public class SyncService {
 
 //        System.out.println("Calling Codeforces contests");
 
+        long start = System.currentTimeMillis();
         CfContestResponse response =
                 codeforcesClient.getContestHistory(
                         user.getCodeforcesHandle()
                 );
+
+        System.out.println("Contest API took: "
+                + (System.currentTimeMillis() - start) + " ms");
 
         if (response == null ||
                 response.getResult() == null) {
@@ -232,8 +236,11 @@ public class SyncService {
         if (newContests.isEmpty()) {
             return 0;
         }
-
+        start = System.currentTimeMillis();
         contestRepository.saveAll(newContests);
+
+        System.out.println("Contest DB save took: "
+                + (System.currentTimeMillis() - start) + " ms");
 
         return newContests.size();
     }
@@ -249,8 +256,8 @@ public class SyncService {
                         user.getCodeforcesHandle()
                 );
 
-//        System.out.println("Codeforces API took "
-//                + (System.currentTimeMillis() - start) + " ms");
+        System.out.println("submission API took "
+                + (System.currentTimeMillis() - start) + " ms");
 
         if (response == null || response.getResult() == null) {
             return 0;
@@ -332,12 +339,12 @@ public class SyncService {
             return 0;
         }
 
-//        start = System.currentTimeMillis();
+        start = System.currentTimeMillis();
 
         submissionRepository.saveAll(newSubmissions);
 
-//        System.out.println("DB save took "
-//                + (System.currentTimeMillis() - start) + " ms");
+        System.out.println("syncSubmission DB save took "
+                + (System.currentTimeMillis() - start) + " ms");
 
         return newSubmissions.size();
     }
