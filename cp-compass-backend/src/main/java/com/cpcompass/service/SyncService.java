@@ -247,23 +247,11 @@ public class SyncService {
 
     private int syncSubmissions(User user) {
 
-//        System.out.println("Calling Codeforces submission");
+        int from = 1;
+        int count = 4000;
 
-        long start = System.currentTimeMillis();
+        long apiStart = System.currentTimeMillis();
 
-        CfSubmissionResponse response =
-                codeforcesClient.getSubmissions(
-                        user.getCodeforcesHandle()
-                );
-
-        System.out.println("submission API took "
-                + (System.currentTimeMillis() - start) + " ms");
-
-        if (response == null || response.getResult() == null) {
-            return 0;
-        }
-
-        // Fetch existing submission IDs once
         Set<Long> existingIds =
                 new HashSet<>(
                         submissionRepository.findSubmissionIdsByUserId(
@@ -271,84 +259,114 @@ public class SyncService {
                         )
                 );
 
-        List<Submission> newSubmissions = new ArrayList<>();
+        List<Submission> newSubmissions =
+                new ArrayList<>();
 
-        List<CfSubmissionDto> cfSubmissions = response.getResult();
+        boolean syncComplete = false;
 
-        for (CfSubmissionDto dto : cfSubmissions) {
+        while (!syncComplete) {
 
-            if (dto.getProblem() == null ||
-                    dto.getProblem().getContestId() == null) {
-                continue;
-            }
+            CfSubmissionResponse response =
+                    codeforcesClient.getSubmissions(
+                            user.getCodeforcesHandle(),
+                            from,
+                            count
+                    );
 
-            // Codeforces returns newest first.
-            // As soon as we find an existing submission,
-            // every remaining submission is already synced.
-            if (existingIds.contains(dto.getId())) {
+            if (response == null ||
+                    response.getResult() == null ||
+                    response.getResult().isEmpty()) {
                 break;
             }
 
-            Submission submission =
-                    Submission.builder()
-                            .cfSubmissionId(dto.getId())
-                            .problemKey(
-                                    dto.getProblem().getContestId()
-                                            + "_"
-                                            + dto.getProblem().getIndex()
-                            )
-                            .cfContestId(
-                                    dto.getProblem().getContestId().longValue()
-                            )
-                            .problemIndex(
-                                    dto.getProblem().getIndex()
-                            )
-                            .problemName(
-                                    dto.getProblem().getName()
-                            )
-                            .problemRating(
-                                    dto.getProblem().getRating()
-                            )
-                            .tags(
-                                    dto.getProblem().getTags()
-                            )
-                            .rawVerdict(
-                                    dto.getVerdict()
-                            )
-                            .solved(
-                                    "OK".equals(dto.getVerdict())
-                            )
-                            .programmingLanguage(
-                                    dto.getProgrammingLanguage()
-                            )
-                            .submissionTime(
-                                    LocalDateTime.ofInstant(
-                                            Instant.ofEpochSecond(
-                                                    dto.getCreationTimeSeconds()
-                                            ),
-                                            ZoneOffset.UTC
-                                    )
-                            )
-                            .user(user)
-                            .build();
+            List<CfSubmissionDto> cfSubmissions =
+                    response.getResult();
 
-            newSubmissions.add(submission);
+            for (CfSubmissionDto dto : cfSubmissions) {
+
+                if (dto.getProblem() == null ||
+                        dto.getProblem().getContestId() == null) {
+                    continue;
+                }
+                
+                if (existingIds.contains(dto.getId())) {
+                    syncComplete = true;
+                    break;
+                }
+
+                Submission submission =
+                        Submission.builder()
+                                .cfSubmissionId(dto.getId())
+                                .problemKey(
+                                        dto.getProblem().getContestId()
+                                                + "_"
+                                                + dto.getProblem().getIndex()
+                                )
+                                .cfContestId(
+                                        dto.getProblem().getContestId().longValue()
+                                )
+                                .problemIndex(
+                                        dto.getProblem().getIndex()
+                                )
+                                .problemName(
+                                        dto.getProblem().getName()
+                                )
+                                .problemRating(
+                                        dto.getProblem().getRating()
+                                )
+                                .tags(
+                                        dto.getProblem().getTags()
+                                )
+                                .rawVerdict(
+                                        dto.getVerdict()
+                                )
+                                .solved(
+                                        "OK".equals(dto.getVerdict())
+                                )
+                                .programmingLanguage(
+                                        dto.getProgrammingLanguage()
+                                )
+                                .submissionTime(
+                                        LocalDateTime.ofInstant(
+                                                Instant.ofEpochSecond(
+                                                        dto.getCreationTimeSeconds()
+                                                ),
+                                                ZoneOffset.UTC
+                                        )
+                                )
+                                .user(user)
+                                .build();
+
+                newSubmissions.add(submission);
+            }
+
+            if (syncComplete) {
+                break;
+            }
+
+            if (cfSubmissions.size() < count) {
+                break;
+            }
+
+            from += count;
         }
+
+        System.out.println("submission API took "
+                + (System.currentTimeMillis() - apiStart) + " ms");
 
         if (newSubmissions.isEmpty()) {
             return 0;
         }
 
-        start = System.currentTimeMillis();
+        long dbStart = System.currentTimeMillis();
 
         submissionRepository.saveAll(newSubmissions);
 
         System.out.println("syncSubmission DB save took "
-                + (System.currentTimeMillis() - start) + " ms");
+                + (System.currentTimeMillis() - dbStart) + " ms");
 
         return newSubmissions.size();
     }
-
     private String determineContestType(
             String contestName
     ) {

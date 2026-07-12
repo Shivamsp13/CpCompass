@@ -28,10 +28,10 @@ public interface ContestRepository extends JpaRepository<Contest, Long> {
     );
 
     @Query("""
-       SELECT c.cfContestId
-       FROM Contest c
-       WHERE c.user.id = :userId
-       """)
+            SELECT c.cfContestId
+            FROM Contest c
+            WHERE c.user.id = :userId
+            """)
     List<Long> findContestIdsByUserId(Long userId);
 
     @Query("""
