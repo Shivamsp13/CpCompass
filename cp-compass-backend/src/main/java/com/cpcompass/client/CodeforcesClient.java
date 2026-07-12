@@ -63,7 +63,10 @@ public class CodeforcesClient {
 //        System.out.println("inside getsubimssion");
 
         String url =
-                BASE_URL + "/user.status?handle=" + handle;
+                BASE_URL
+                        + "/user.status?handle="
+                        + handle
+                        + "&from=1&count=2000";
 
         return restTemplate.getForObject(
                 url,
