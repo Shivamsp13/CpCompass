@@ -161,8 +161,8 @@ public class SyncService {
 
     private int syncContests(User user) {
 
-//        System.out.println("Calling Codeforces contests");
-
+        System.out.println("===== INSIDE syncContests =====");
+        
         long start = System.currentTimeMillis();
         CfContestResponse response =
                 codeforcesClient.getContestHistory(
