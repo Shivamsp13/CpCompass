@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 public class SecurityConfig {
 
 
-    @Value("${FRONTEND_URL:https://cp-compass-4r81i0o8j-shivamsp14.vercel.app}")
+    @Value("${FRONTEND_URL=https://cp-compass.vercel.app}")
     private String frontendUrl;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
