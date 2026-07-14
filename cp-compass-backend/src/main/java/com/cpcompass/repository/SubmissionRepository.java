@@ -16,9 +16,14 @@ public interface SubmissionRepository
             Long userId
     );
 
+    List<Submission> findByUserAndSolvedTrueAndSolvedDuringContestTrue(
+            User user
+    );
+
     boolean existsByCfSubmissionId(Long cfSubmissionId);
 
     List<Submission> findByUserAndSolvedTrue(User user);
+
     long countByUserIdAndSolvedTrueAndSubmissionTimeAfter(
             Long userId,
             LocalDateTime submissionTime

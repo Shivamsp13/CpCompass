@@ -49,7 +49,7 @@ public class ContestHistoryService {
 
         List<Submission> solvedSubmissions =
                 submissionRepository
-                        .findByUserAndSolvedTrue(user);
+                        .findByUserAndSolvedTrueAndSolvedDuringContestTrue(user);
 
         Map<Long, String> solvedProblemsMap =
                 solvedSubmissions.stream()
