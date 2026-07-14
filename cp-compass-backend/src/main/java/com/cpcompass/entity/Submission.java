@@ -48,6 +48,9 @@ public class Submission {
     private String rawVerdict;
 
     @Column(nullable = false)
+    private Boolean solvedDuringContest;
+
+    @Column(nullable = false)
     private Boolean solved;
 
     @Column(nullable = false)

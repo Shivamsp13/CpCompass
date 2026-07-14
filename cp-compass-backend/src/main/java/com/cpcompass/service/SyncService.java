@@ -18,10 +18,9 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -161,7 +160,7 @@ public class SyncService {
 
     private int syncContests(User user) {
 
-        System.out.println("===== INSIDE syncContests =====");
+//        System.out.println("===== INSIDE syncContests =====");
         
         long start = System.currentTimeMillis();
         CfContestResponse response =
@@ -169,8 +168,21 @@ public class SyncService {
                         user.getCodeforcesHandle()
                 );
 
-        System.out.println("Contest API took: "
-                + (System.currentTimeMillis() - start) + " ms");
+        CfContestListResponse contestListResponse =
+                codeforcesClient.getContestList();
+
+        Map<Integer, CfContestListDto> contestMap =
+                contestListResponse.getResult()
+                        .stream()
+                        .collect(
+                                Collectors.toMap(
+                                        CfContestListDto::getId,
+                                        Function.identity()
+                                )
+                        );
+
+//        System.out.println("Contest API took: "
+//                + (System.currentTimeMillis() - start) + " ms");
 
         if (response == null ||
                 response.getResult() == null) {
@@ -191,6 +203,12 @@ public class SyncService {
 
             if (existingContestIds.contains(dto.getContestId().longValue())) {
                 break;
+            }
+            CfContestListDto contestInfo =
+                    contestMap.get(dto.getContestId());
+
+            if (contestInfo == null) {
+                continue;
             }
 
             Contest contest =
@@ -223,6 +241,23 @@ public class SyncService {
                                     LocalDateTime.ofInstant(
                                             Instant.ofEpochSecond(
                                                     dto.getRatingUpdateTimeSeconds()
+                                            ),
+                                            ZoneOffset.UTC
+                                    )
+                            )
+                            .startTime(
+                                    LocalDateTime.ofInstant(
+                                            Instant.ofEpochSecond(
+                                                    contestInfo.getStartTimeSeconds()
+                                            ),
+                                            ZoneOffset.UTC
+                                    )
+                            )
+                            .endTime(
+                                    LocalDateTime.ofInstant(
+                                            Instant.ofEpochSecond(
+                                                    contestInfo.getStartTimeSeconds()
+                                                            + contestInfo.getDurationSeconds()
                                             ),
                                             ZoneOffset.UTC
                                     )
@@ -282,6 +317,18 @@ public class SyncService {
             List<CfSubmissionDto> cfSubmissions =
                     response.getResult();
 
+            List<Contest> contests =
+                    contestRepository.findByUserId(user.getId());
+
+            Map<Long, Contest> contestMap =
+                    contests.stream()
+                            .collect(
+                                    Collectors.toMap(
+                                            Contest::getCfContestId,
+                                            Function.identity()
+                                    )
+                            );
+
             for (CfSubmissionDto dto : cfSubmissions) {
 
                 if (dto.getProblem() == null ||
@@ -292,6 +339,30 @@ public class SyncService {
                 if (existingIds.contains(dto.getId())) {
                     syncComplete = true;
                     break;
+                }
+
+                Contest contest =
+                        contestMap.get(
+                                dto.getProblem().getContestId().longValue()
+                        );
+
+                LocalDateTime submissionTime =
+                        LocalDateTime.ofInstant(
+                                Instant.ofEpochSecond(
+                                        dto.getCreationTimeSeconds()
+                                ),
+                                ZoneOffset.UTC
+                        );
+
+                boolean solvedDuringContest = false;
+
+                if (contest != null &&
+                        "OK".equals(dto.getVerdict())) {
+
+                    solvedDuringContest =
+                            !submissionTime.isBefore(contest.getStartTime())
+                                    &&
+                                    !submissionTime.isAfter(contest.getEndTime());
                 }
 
                 Submission submission =
@@ -334,6 +405,8 @@ public class SyncService {
                                                 ZoneOffset.UTC
                                         )
                                 )
+                                .submissionTime(submissionTime)
+                                .solvedDuringContest(solvedDuringContest)
                                 .user(user)
                                 .build();
 

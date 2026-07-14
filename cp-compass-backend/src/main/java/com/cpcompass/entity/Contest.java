@@ -40,6 +40,12 @@ public class Contest {
     private Integer ratingChange;
 
     @Column(nullable = false)
+    private LocalDateTime startTime;
+
+    @Column(nullable = false)
+    private LocalDateTime endTime;
+
+    @Column(nullable = false)
     private LocalDateTime contestTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
