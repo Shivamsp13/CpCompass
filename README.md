@@ -1,5 +1,7 @@
 # 🚀 CP Compass
 
+Live Link: https://cp-compass.vercel.app/
+
 > A Competitive Programming Analytics Platform for Codeforces users.
 
 CP Compass is a full-stack web application that helps competitive programmers analyze their Codeforces performance through detailed topic analytics, rating insights, contest history, and personalized problem recommendations.
