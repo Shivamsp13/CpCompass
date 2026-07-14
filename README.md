@@ -104,25 +104,6 @@ Track:
 
 ---
 
-## 📸 Screenshots
-
-### Dashboard
-![Dashboard](screenshots/dashboard.png)
-
-### Recommendations
-![Recommendations](screenshots/recommendations.png)
-
-### Contest History
-![Contest History](screenshots/contest-history.png)
-
-### Topic Insights
-![Topic Insights](screenshots/topic-insights.png)
-
-### Progress Review
-![Progress Review](screenshots/progress-review.png)
-
----
-
 ## 🎯 Why CP Compass?
 
 Codeforces provides a huge amount of data, but it can be difficult to extract meaningful insights from it.
