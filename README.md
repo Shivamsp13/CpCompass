@@ -307,6 +307,6 @@ Deployment includes:
 
 **Shivam Pandey**
 
-GitHub: https://github.com/<your-github>
+GitHub: https://github.com/Shivamsp13
 
-LinkedIn: https://linkedin.com/in/<your-linkedin>
+LinkedIn: https://linkedin.com/in/shivam-pandey-472782203/
