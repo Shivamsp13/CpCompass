@@ -20,7 +20,7 @@ function ProgressCard({
 
                 <span>
 
-                    Accepted Solutions
+                    Problems Solved
 
                 </span>
 
