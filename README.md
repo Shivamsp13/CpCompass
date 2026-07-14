@@ -129,5 +129,3 @@ https://cp-compass.vercel.app/
 ## 👨‍💻 Author
 
 **Shivam Pandey**
-
-If you have any suggestions or feedback, feel free to open an issue or reach out!
