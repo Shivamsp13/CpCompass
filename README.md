@@ -1,305 +1,147 @@
 # 🚀 CP Compass
 
-Live Link: https://cp-compass.vercel.app/
+**Live Demo:** https://cp-compass.vercel.app/
 
-> A Competitive Programming Analytics Platform for Codeforces users.
+> A full-stack Competitive Programming Analytics Platform built for Codeforces users.
 
-CP Compass is a full-stack web application that helps competitive programmers analyze their Codeforces performance through detailed topic analytics, rating insights, contest history, and personalized problem recommendations.
+CP Compass synchronizes a user's Codeforces profile and transforms thousands of submissions into meaningful analytics. It helps competitive programmers identify their strengths, weaknesses, growth areas, and provides personalized problem recommendations for focused practice.
 
 ---
 
 ## ✨ Features
 
-### 🔐 Authentication
-
-- User Registration
-- User Login
-- JWT Authentication
-- BCrypt Password Encryption
-- Secure Protected APIs
-
----
-
-### 👤 User Profile
-
-- Connect Codeforces Handle
-- Current Rating
-- Maximum Rating
-- Last Sync Timestamp
-- Manual Sync with Cooldown Protection
-
----
-
 ### 📊 Dashboard
-
-Displays an overview of the user's Codeforces profile including:
-
-- Current Rating
-- Maximum Rating
-- Total Contests
-- Total Submissions
-- Total Problems Solved
-- Problems Solved (Last 30 Days)
-- Strong Topics
-- Weak Topics
-- Strong Rating Bands
-- Growth Zone
+- View your current and maximum Codeforces rating.
+- Track total contests, submissions, and problems solved.
+- Identify your strongest and weakest topics.
+- Discover your current Growth Zone.
+- Get a personalized daily problem recommendation.
+- Monitor your recent solving activity.
 
 ---
 
-### 📈 Topic Analytics
-
-Analyze performance across Codeforces topics.
-
-For every topic:
-
-- Attempts
-- Accepted Solutions
-- Acceptance Rate
-
-Examples:
-
-- Graphs
-- DP
-- Binary Search
-- Greedy
-- Math
-- Implementation
-- etc.
-
----
-
-### 📉 Rating Insights
-
-Performance grouped by difficulty.
-
-Examples:
-
-- 800–1000
-- 1000–1200
-- 1200–1400
-- 1400–1600
-- 1600–1800
-- 1800+
-
-Each band displays:
-
-- Attempts
-- Solved
-- Acceptance Rate
+### 🎯 Recommendations
+- **Smart Recommendation** automatically suggests an unsolved Codeforces problem based on:
+  - Current Rating
+  - Growth Zone
+  - Weak Topics
+  - Previously Solved Problems
+- **Custom Recommendation** allows users to generate recommendations based on their preferred criteria.
 
 ---
 
 ### 🏆 Contest History
+- View complete rated contest history.
+- Contest rank and rating changes.
+- Previous and new ratings.
+- Problems solved during each contest.
+- Direct links to Codeforces contests.
 
-Complete Codeforces contest history including:
+---
 
-- Contest Name
-- Rank
+### 📚 Topic Insights
+- Topic-wise analytics based on Codeforces tags.
+- Acceptance rate for every topic.
+- Attempts and accepted submissions.
+- Automatically identifies strong and weak topics.
+- Visual progress indicators for every topic.
+
+---
+
+### 📈 Progress Review
+Analyze your performance over:
+- Last 7 Days
+- Last 30 Days
+- Last 90 Days
+- Custom Date Range
+
+Track:
+- Problems Solved
+- Contests Participated
 - Rating Change
-- New Rating
+- Highest Rated Problem Solved
+- Average Problem Rating Solved
+- Problems Solved by Rating
+- Daily Solving Activity
 
 ---
 
-### 🎯 Problem Recommendations
+## 🔄 Smart Synchronization
 
-Recommends unsolved problems based on:
-
-- Weak Topics
-- Growth Zone
-- Current Rating
-
-Recommendation updates only after syncing.
+- One-click synchronization with the Codeforces API.
+- First sync imports the user's complete submission history.
+- Subsequent syncs fetch only newly created submissions, making synchronization significantly faster.
+- Automatically updates all analytics after every sync.
 
 ---
 
-### 🔄 Codeforces Synchronization
-
-Synchronizes user data directly from the Codeforces API.
-
-Includes:
-
-- Contest History
-- Complete Submission History
-- Topic Analytics
-- Rating Analytics
-
-Optimized using incremental synchronization.
-
-- First Sync → Complete submission history
-- Future Syncs → Only newly added submissions
-
----
-
-### ⚡ Redis Caching
-
-Frequently accessed analytics are cached using Redis (Upstash).
-
-Benefits:
-
-- FDaily Recommendation Caching: Stores each user's daily recommended Codeforces problem to ensure consistency throughout the day and reduce    recomputation.
-- Analytics Caching: Caches computed dashboard and analytics data (dashboard, topic insights, rating insights, etc.) to improve response time   and reduce database load.
-
----
-
-## 🛠 Tech Stack
+## 🛠️ Tech Stack
 
 ### Backend
-
 - Java 21
-- Spring Boot 3
-- Spring Security
+- Spring Boot
+- Spring Security (JWT Authentication)
 - Spring Data JPA
 - Hibernate
-- PostgreSQL
-- Redis
 - Maven
-- JWT Authentication
-
----
 
 ### Frontend
-
-- React 19
+- React
 - Vite
-- React Router
 - Axios
-- Material UI (MUI)
 - CSS
 
----
+### Database & Cache
+- PostgreSQL
+- Redis (Upstash)
 
 ### Deployment
-
-Backend
-
+- Docker
 - AWS EC2
-- Docker
-- Nginx Reverse Proxy
-- DuckDNS
-- Let's Encrypt SSL
-
-Frontend
-
-- Vercel
-
-Database
-
-- PostgreSQL (Hosted on EC2)
-
-Caching
-
-- Upstash Redis
-
----
-
-## 🏗 Project Architecture
-
-```
-React Frontend
-       │
-       ▼
-Spring Boot REST APIs
-       │
- ┌─────┴─────────┐
- │               │
- ▼               ▼
-PostgreSQL    Redis Cache
-       │
-       ▼
-Codeforces API
-```
-
----
-
-## 📂 Project Structure
-
-```
-cp-compass-backend
-│
-├── controller
-├── service
-├── repository
-├── entity
-├── dto
-├── security
-├── client
-├── config
-└── exception
-
-cp-compass-frontend
-│
-├── components
-├── pages
-├── services
-├── hooks
-├── assets
-└── styles
-```
-
----
-
-## ⚙️ Synchronization Flow
-
-```
-User clicks Sync
-        │
-        ▼
-Fetch Contest History
-        │
-        ▼
-Fetch Submission History
-        │
-        ▼
-Store New Submissions
-        │
-        ▼
-Compute Topic Analytics
-        │
-        ▼
-Compute Rating Analytics
-        │
-        ▼
-Cache Results
-        │
-        ▼
-Return Updated Dashboard
-```
-
----
-
-## 🔒 Security
-
-- JWT Authentication
-- BCrypt Password Encoding
-- Stateless Authentication
-- Protected Endpoints
-- CORS Configuration
-
----
-
-## 🚀 Deployment
-
-Backend is containerized using Docker and deployed on AWS EC2.
-
-Deployment includes:
-
-- Docker
 - Nginx
-- HTTPS (Let's Encrypt)
-- DuckDNS
-- PostgreSQL
-- Redis
+- Let's Encrypt SSL
+- Vercel
 
 ---
 
 ## 📸 Screenshots
 
-<img width="1440" height="808" alt="image" src="https://github.com/user-attachments/assets/7eeb10bd-3438-4086-ba6e-4cd9e603b542" />
+### Dashboard
+![Dashboard](screenshots/dashboard.png)
 
-<img width="1440" height="805" alt="image" src="https://github.com/user-attachments/assets/04e999b5-94b8-40a4-830a-12c0e1025d9f" />
+### Recommendations
+![Recommendations](screenshots/recommendations.png)
 
+### Contest History
+![Contest History](screenshots/contest-history.png)
 
+### Topic Insights
+![Topic Insights](screenshots/topic-insights.png)
+
+### Progress Review
+![Progress Review](screenshots/progress-review.png)
+
+---
+
+## 🎯 Why CP Compass?
+
+Codeforces provides a huge amount of data, but it can be difficult to extract meaningful insights from it.
+
+CP Compass helps answer questions such as:
+
+- Which topics am I strongest in?
+- Which topics need improvement?
+- What rating range should I practice next?
+- What problem should I solve now?
+- How has my performance changed over time?
+
+Instead of manually analyzing thousands of submissions, CP Compass generates these insights automatically after synchronization.
+
+---
+
+## 🌐 Live Website
+
+https://cp-compass.vercel.app/
 
 ---
 
@@ -307,6 +149,4 @@ Deployment includes:
 
 **Shivam Pandey**
 
-GitHub: https://github.com/Shivamsp13
-
-LinkedIn: https://linkedin.com/in/shivam-pandey-472782203/
+If you have any suggestions or feedback, feel free to open an issue or reach out!
